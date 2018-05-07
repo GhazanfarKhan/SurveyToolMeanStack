@@ -9,25 +9,5 @@ var contacts = {
 
 angular
   .module('components.contact')
-  .component('contacts', contacts)
-  .config(function ($stateProvider) {
-    $stateProvider
-      .state('contacts', {
-        parent: 'app',
-        url: '/contacts?filter',
-        component: 'contacts',
-        params: {
-          filter: {
-            value: 'none'
-          }
-        },
-        resolve: {
-          contacts: function (ContactService) {
-            return ContactService.getContactList().$loaded();
-          },
-          filter: function ($transition$) {
-            return $transition$.params();
-          }
-        }
-      });
-  });
+  .component('contacts', contacts);
+  
