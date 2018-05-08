@@ -66,29 +66,6 @@ angular
 /**
  *
  * @ngdoc module
- * @name components
- *
- * @requires components.contact
- * @requires components.auth
- *
- * @description
- *
- * This is the components module. It includes all of our components.
- *
- **/
-
-angular
-  .module('components', [
-    'components.contact',
-    'components.auth'
-  ]);
-})(window.angular);
-(function(angular){
-'use strict';
-
-/**
- *
- * @ngdoc module
  * @name common
  *
  * @requires ui.router
@@ -108,6 +85,29 @@ angular
     $transitions.onStart({}, cfpLoadingBar.start);
     $transitions.onSuccess({}, cfpLoadingBar.complete);
   }]);
+})(window.angular);
+(function(angular){
+'use strict';
+
+/**
+ *
+ * @ngdoc module
+ * @name components
+ *
+ * @requires components.contact
+ * @requires components.auth
+ *
+ * @description
+ *
+ * This is the components module. It includes all of our components.
+ *
+ **/
+
+angular
+  .module('components', [
+    'components.contact',
+    'components.auth'
+  ]);
 })(window.angular);
 (function(angular){
 'use strict';
@@ -151,12 +151,14 @@ angular
   .run(["$transitions", "$state", "AuthService", function ($transitions, $state, AuthService) {
     $transitions.onStart({
       to: function (state) {
+        debugger;
         return !!(state.data && state.data.requiredAuth);
       }
     }, function() {
       return AuthService
         .requireAuthentication()
-        .catch(function () {
+        .catch(function (response) {
+          debugger;
           return $state.target('auth.login');
         });
     });
@@ -280,18 +282,8 @@ var app = {
 
 angular
   .module('common')
-  .component('app', app)
-  .config(["$stateProvider", function ($stateProvider) {
-    $stateProvider
-      .state('app', {
-        redirectTo: 'contacts',
-        url: '/app',
-        data: {
-          requiredAuth: true
-        },
-        component: 'app'
-      })
-  }]);
+  .component('app', app);
+
 })(window.angular);
 (function(angular){
 'use strict';
@@ -918,12 +910,12 @@ angular.module('templates', []).run(['$templateCache', function($templateCache) 
 $templateCache.put('./app-nav.html','<header class="header"><div class="header__fixed"><div><div class="header__brand">Contacts <a ui-sref="new" class="header__button header__button--new-contact"><i class="material-icons">add_circle_outline</i> New Contact</a></div><div class="header__logout">{{ ::$ctrl.user.email }} <a href="" ng-click="$ctrl.onLogout();"><span class="header__button"><i class="material-icons">power_settings_new</i> Logout</span></a></div></div></div></header>');
 $templateCache.put('./app-sidebar.html','<aside class="sidebar"><div class="sidebar__logo"><a href=""><img src="/img/logo.png" alt=""></a></div><span class="sidebar__header">Tags</span><ul class="sidebar__lst"><li class="sidebar__item" ng-repeat="item in ::$ctrl.contactTags"><a class="sidebar__link" ui-sref="contacts({ filter: item.state })" ui-sref-active-eq="sidebar__link--active"><i class="material-icons">{{ ::item.icon }} </i>{{ ::item.label }}</a></li></ul></aside>');
 $templateCache.put('./app.html','<div class="root"><app-nav user="$ctrl.user" on-logout="$ctrl.logout();"></app-nav><app-sidebar></app-sidebar><div class="app"><div ui-view></div></div></div>');
-$templateCache.put('./contact-detail.html','<div class="contact"><form name="contactDetailForm" novalidate><div><span class="contact__required">*</span> field is required</div><div class="contact__box"><h3 class="contact__sub-title">Personal</h3><div class="contact__field"><label>Name <span class="contact__required">*</span></label><input type="text" name="name" length-check required="required" ng-change="$ctrl.updateContact();" ng-model-options="{\r\n            \'updateOn\': \'default blur\',\r\n            \'debounce\': {\r\n              \'default\': 250,\r\n              \'blur\': 0\r\n            }\r\n          }" ng-model="$ctrl.contact.name"></div><div class="contact__field"><label>Email <span class="contact__error" ng-if="contactDetailForm.email.$error.email">Must be a valid email</span></label><input type="email" name="email" length-check ng-change="$ctrl.updateContact();" ng-model-options="{\r\n            \'updateOn\': \'default blur\',\r\n            \'debounce\': {\r\n              \'default\': 250,\r\n              \'blur\': 0\r\n            }\r\n          }" ng-model="$ctrl.contact.email"></div><div class="contact__field"><label>Job title</label><input type="text" name="jobTitle" length-check ng-change="$ctrl.updateContact();" ng-model-options="{\r\n            \'updateOn\': \'default blur\',\r\n            \'debounce\': {\r\n              \'default\': 250,\r\n              \'blur\': 0\r\n            }\r\n          }" ng-model="$ctrl.contact.job"></div><div class="contact__field"><label>Location</label><input type="text" name="location" length-check ng-change="$ctrl.updateContact();" ng-model-options="{\r\n            \'updateOn\': \'default blur\',\r\n            \'debounce\': {\r\n              \'default\': 250,\r\n              \'blur\': 0\r\n            }\r\n          }" ng-model="$ctrl.contact.location"></div></div><div class="contact__box contact__box--no-margin"><h3 class="contact__sub-title">Social</h3><div class="contact__field"><label>Facebook</label><input type="text" name="facebook" length-check ng-change="$ctrl.updateContact();" ng-model-options="{\r\n            \'updateOn\': \'default blur\',\r\n            \'debounce\': {\r\n              \'default\': 250,\r\n              \'blur\': 0\r\n            }\r\n          }" ng-model="$ctrl.contact.social.facebook"></div><div class="contact__field"><label>GitHub</label><input type="text" name="github" length-check ng-change="$ctrl.updateContact();" ng-model-options="{\r\n            \'updateOn\': \'default blur\',\r\n            \'debounce\': {\r\n              \'default\': 250,\r\n              \'blur\': 0\r\n            }\r\n          }" ng-model="$ctrl.contact.social.github"></div><div class="contact__field"><label>Twitter</label><input type="text" name="twitter" length-check ng-change="$ctrl.updateContact();" ng-model-options="{\r\n            \'updateOn\': \'default blur\',\r\n            \'debounce\': {\r\n              \'default\': 250,\r\n              \'blur\': 0\r\n            }\r\n          }" ng-model="$ctrl.contact.social.twitter"></div><div class="contact__field"><label>LinkedIn</label><input type="text" name="linkedin" length-check ng-change="$ctrl.updateContact();" ng-model-options="{\r\n            \'updateOn\': \'default blur\',\r\n            \'debounce\': {\r\n              \'default\': 250,\r\n              \'blur\': 0\r\n            }\r\n          }" ng-model="$ctrl.contact.social.linkedin"></div></div><contact-tag tag="$ctrl.contact.tag" on-change="$ctrl.tagChange($event);"></contact-tag><div ng-if="$ctrl.isNewContact"><button class="contact__action button" ng-disabled="contactDetailForm.$invalid" ng-click="$ctrl.saveContact();">Create contact</button></div><div ng-if="!$ctrl.isNewContact"><button class="contact__action button delete" ng-click="$ctrl.deleteContact();">Delete contact</button></div></form></div>');
-$templateCache.put('./contact.html','<div class="contact-card"><button class="contact-card__link button--clean" ng-click="$ctrl.selectContact();"><div class="contact-card__column contact-card__column--name">{{ ::$ctrl.contact.name }} <span class="contact-card__pill contact-card__pill--{{ ::$ctrl.contact.tag }}">{{ ::$ctrl.contact.tag }}</span></div><div class="contact-card__column contact-card__column--email">{{ ::$ctrl.contact.email }}</div></button></div>');
-$templateCache.put('./contact-edit.html','<contact-detail contact="$ctrl.contact" on-delete="$ctrl.deleteContact($event);" on-update="$ctrl.updateContact($event);"></contact-detail>');
-$templateCache.put('./contact-new.html','<contact-detail contact="$ctrl.contact" on-save="$ctrl.createNewContact($event);"></contact-detail>');
-$templateCache.put('./contact-tag.html','<div class="contact__field contact__field--long"><label>Tag</label><ul><li class="contact-card__pill contact-card__pill--{{ tag }}" ng-repeat="tag in ::$ctrl.tags" ng-class="{\r\n        \'contact__pill--active\': $ctrl.tag == tag\r\n      }"><button class="button--clean" ng-click="$ctrl.updateTag(tag);">{{ ::tag }}</button></li></ul></div>');
-$templateCache.put('./contacts.html','<div class="contacts"><ul class="contacts-list"><li ng-repeat="contact in $ctrl.filteredContacts"><contact contact="contact" on-select="$ctrl.goToContact($event);"></contact></li></ul><div class="contacts__empty" ng-if="!$ctrl.filteredContacts.length"><i class="material-icons">face</i> There\'s no one here...</div></div>');
 $templateCache.put('./auth-form.html','<form name="authForm" novalidate ng-submit="$ctrl.submitForm();"><label><input type="email" name="email" required="required" placeholder="Enter your email" ng-model="$ctrl.user.email"></label><label><input type="password" name="password" required="required" placeholder="Enter your password" ng-model="$ctrl.user.password"></label><div class="auth-button"><button class="button" type="submit" ng-disabled="authForm.$invalid">{{ $ctrl.button }}</button></div><div ng-if="$ctrl.message" class="message error">{{ $ctrl.message }}</div></form>');
+$templateCache.put('./register.html','<div class="auth"><h1>Register</h1><auth-form user="$ctrl.user" message="{{ $ctrl.error }}" button="Create user" on-submit="$ctrl.createUser($event);"></auth-form></div><div class="auth__info"><a ui-sref="auth.login">Already have an account? Login here.</a></div>');
 $templateCache.put('./login.html','<div class="auth"><h1>Login</h1><auth-form user="$ctrl.user" message="{{ $ctrl.error }}" button="Login" on-submit="$ctrl.loginUser($event);"></auth-form></div><div class="auth__info"><a ui-sref="auth.register">Don\'t have an account? Create one here.</a></div>');
-$templateCache.put('./register.html','<div class="auth"><h1>Register</h1><auth-form user="$ctrl.user" message="{{ $ctrl.error }}" button="Create user" on-submit="$ctrl.createUser($event);"></auth-form></div><div class="auth__info"><a ui-sref="auth.login">Already have an account? Login here.</a></div>');}]);})(window.angular);
+$templateCache.put('./contact.html','<div class="contact-card"><button class="contact-card__link button--clean" ng-click="$ctrl.selectContact();"><div class="contact-card__column contact-card__column--name">{{ ::$ctrl.contact.name }} <span class="contact-card__pill contact-card__pill--{{ ::$ctrl.contact.tag }}">{{ ::$ctrl.contact.tag }}</span></div><div class="contact-card__column contact-card__column--email">{{ ::$ctrl.contact.email }}</div></button></div>');
+$templateCache.put('./contact-detail.html','<div class="contact"><form name="contactDetailForm" novalidate><div><span class="contact__required">*</span> field is required</div><div class="contact__box"><h3 class="contact__sub-title">Personal</h3><div class="contact__field"><label>Name <span class="contact__required">*</span></label><input type="text" name="name" length-check required="required" ng-change="$ctrl.updateContact();" ng-model-options="{\r\n            \'updateOn\': \'default blur\',\r\n            \'debounce\': {\r\n              \'default\': 250,\r\n              \'blur\': 0\r\n            }\r\n          }" ng-model="$ctrl.contact.name"></div><div class="contact__field"><label>Email <span class="contact__error" ng-if="contactDetailForm.email.$error.email">Must be a valid email</span></label><input type="email" name="email" length-check ng-change="$ctrl.updateContact();" ng-model-options="{\r\n            \'updateOn\': \'default blur\',\r\n            \'debounce\': {\r\n              \'default\': 250,\r\n              \'blur\': 0\r\n            }\r\n          }" ng-model="$ctrl.contact.email"></div><div class="contact__field"><label>Job title</label><input type="text" name="jobTitle" length-check ng-change="$ctrl.updateContact();" ng-model-options="{\r\n            \'updateOn\': \'default blur\',\r\n            \'debounce\': {\r\n              \'default\': 250,\r\n              \'blur\': 0\r\n            }\r\n          }" ng-model="$ctrl.contact.job"></div><div class="contact__field"><label>Location</label><input type="text" name="location" length-check ng-change="$ctrl.updateContact();" ng-model-options="{\r\n            \'updateOn\': \'default blur\',\r\n            \'debounce\': {\r\n              \'default\': 250,\r\n              \'blur\': 0\r\n            }\r\n          }" ng-model="$ctrl.contact.location"></div></div><div class="contact__box contact__box--no-margin"><h3 class="contact__sub-title">Social</h3><div class="contact__field"><label>Facebook</label><input type="text" name="facebook" length-check ng-change="$ctrl.updateContact();" ng-model-options="{\r\n            \'updateOn\': \'default blur\',\r\n            \'debounce\': {\r\n              \'default\': 250,\r\n              \'blur\': 0\r\n            }\r\n          }" ng-model="$ctrl.contact.social.facebook"></div><div class="contact__field"><label>GitHub</label><input type="text" name="github" length-check ng-change="$ctrl.updateContact();" ng-model-options="{\r\n            \'updateOn\': \'default blur\',\r\n            \'debounce\': {\r\n              \'default\': 250,\r\n              \'blur\': 0\r\n            }\r\n          }" ng-model="$ctrl.contact.social.github"></div><div class="contact__field"><label>Twitter</label><input type="text" name="twitter" length-check ng-change="$ctrl.updateContact();" ng-model-options="{\r\n            \'updateOn\': \'default blur\',\r\n            \'debounce\': {\r\n              \'default\': 250,\r\n              \'blur\': 0\r\n            }\r\n          }" ng-model="$ctrl.contact.social.twitter"></div><div class="contact__field"><label>LinkedIn</label><input type="text" name="linkedin" length-check ng-change="$ctrl.updateContact();" ng-model-options="{\r\n            \'updateOn\': \'default blur\',\r\n            \'debounce\': {\r\n              \'default\': 250,\r\n              \'blur\': 0\r\n            }\r\n          }" ng-model="$ctrl.contact.social.linkedin"></div></div><contact-tag tag="$ctrl.contact.tag" on-change="$ctrl.tagChange($event);"></contact-tag><div ng-if="$ctrl.isNewContact"><button class="contact__action button" ng-disabled="contactDetailForm.$invalid" ng-click="$ctrl.saveContact();">Create contact</button></div><div ng-if="!$ctrl.isNewContact"><button class="contact__action button delete" ng-click="$ctrl.deleteContact();">Delete contact</button></div></form></div>');
+$templateCache.put('./contact-new.html','<contact-detail contact="$ctrl.contact" on-save="$ctrl.createNewContact($event);"></contact-detail>');
+$templateCache.put('./contact-edit.html','<contact-detail contact="$ctrl.contact" on-delete="$ctrl.deleteContact($event);" on-update="$ctrl.updateContact($event);"></contact-detail>');
+$templateCache.put('./contact-tag.html','<div class="contact__field contact__field--long"><label>Tag</label><ul><li class="contact-card__pill contact-card__pill--{{ tag }}" ng-repeat="tag in ::$ctrl.tags" ng-class="{\r\n        \'contact__pill--active\': $ctrl.tag == tag\r\n      }"><button class="button--clean" ng-click="$ctrl.updateTag(tag);">{{ ::tag }}</button></li></ul></div>');
+$templateCache.put('./contacts.html','<div class="contacts"><ul class="contacts-list"><li ng-repeat="contact in $ctrl.filteredContacts"><contact contact="contact" on-select="$ctrl.goToContact($event);"></contact></li></ul><div class="contacts__empty" ng-if="!$ctrl.filteredContacts.length"><i class="material-icons">face</i> There\'s no one here...</div></div>');}]);})(window.angular);

@@ -38,12 +38,12 @@ angular
   .run(function ($transitions, $state, AuthService) {
     $transitions.onStart({
       to: function (state) {
-        return !!(state.data && state.data.requiredAuth);
+         return !!(state.data && state.data.requiredAuth);
       }
     }, function() {
       return AuthService
         .requireAuthentication()
-        .catch(function () {
+        .catch(function (response) {
           return $state.target('auth.login');
         });
     });
